@@ -26,11 +26,9 @@ function App() {
         />
 
         {isLoggedIn && <>
-        <Route path = "/add-hotel" element = {
-          <Layout>
+        <Route path = "/add-hotel" element ={<Layout>
             <AddHotel />
-          </Layout>
-        }
+          </Layout>}
         />
         </>}
         <Route path="*" element={<Navigate to="/" />}
