@@ -1,4 +1,7 @@
-import useForm from "react-hook-form";
+import {FormProvider, useForm} from "react-hook-form";
+import DetailsSection from "../DetailsSection";
+import TypeSection from "./TypeSection";
+import FacilitiesSection from "./FacilitiesSection";
 
 export type HotelFormData = {
   name: string;
@@ -18,7 +21,13 @@ export type HotelFormData = {
 const ManageHotelForm = () => {
   const formMethods = useForm<HotelFormData>();
 
-  return (<form></form>)
+  return (<FormProvider {...formMethods}>
+    <form className = "flex flex-col gap-10">
+      <DetailsSection />
+      <TypeSection />
+      <FacilitiesSection />
+    </form>
+    </FormProvider>)
 }
 
 export default ManageHotelForm;//We are going to make more partion to make it more command about the variable
