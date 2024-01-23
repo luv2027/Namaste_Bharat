@@ -6,7 +6,7 @@ export type HotelType = {
   name: string;
   city: string;
   country: string;
-  description: string;
+  description: string; 
   type: string;
   adultCount: number;
   childCount: number;
