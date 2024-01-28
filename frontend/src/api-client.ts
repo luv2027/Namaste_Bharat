@@ -37,8 +37,6 @@ export const signIn = async (formData: SignInFormData) => {
   return body;
 }
 
-
-
 export const validateToken = async () => {
   const response = await fetch(`${API_BASE_URL}/api/auth/validate-token`, {
     credentials: "include"
@@ -89,3 +87,15 @@ export const fetchMyHotels = async():Promise<HotelType[]> => {
 
   return response.json();
 }
+
+export const fetchMyHotelById = async(hotelId: string): Promise<HotelType> => {
+  const response  = await fetch(`${API_BASE_URL}/api/my-hotels/${hotelId}`, {
+    credentials: "include" // tells the browser to send the cookie along with the request
+  })
+
+  if(!response.ok){
+    throw new Error("Failed to fetch hotel");
+  }
+
+  return response.json();
+};

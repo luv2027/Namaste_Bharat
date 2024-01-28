@@ -6,7 +6,7 @@ import { HotelType } from "../shared/types";
 import Hotel from "../models/hotel";
 import verifyToken from "../middleware/auth";
 import { body } from "express-validator";
-import { typographyClasses } from "@mui/material";
+
 
 const router = express.Router();
 
@@ -60,6 +60,7 @@ router.post("/", verifyToken, [
   }
 })
 
+//api/my-hotels
 router.get("/", verifyToken, async(req: Request, res: Response) => {
 
   try{
@@ -68,6 +69,22 @@ router.get("/", verifyToken, async(req: Request, res: Response) => {
   }
   catch(error){
     res.status(500).json({message: "Error fetching hotels"});
+  }
+})
+
+
+//api/my-hotels/:id
+router.get("/:id", verifyToken, async(req: Request, res: Response) => {
+  const id = req.params.id.toString();
+  try{
+    const hotel = await Hotel.findOne({
+      _id: id,
+      userId: req.userId
+    })
+    res.json(hotel);
+  }
+  catch(error){
+    res.status(500).json({message: "Error fetching hotel"});
   }
 })
 
