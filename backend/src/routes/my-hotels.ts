@@ -33,14 +33,7 @@ router.post("/", verifyToken, [
     const newHotel: HotelType = req.body; //for form data
 
     //1. upload images to cloudinary
-    const uploadPromises = imageFiles.map(async(image) => {
-      const b64 = Buffer.from(image.buffer).toString("base64");// convert image to base64
-      let dataURI = "data:" + image.mimetype + ";base64," + b64;
-      const res = await cloudinary.v2.uploader.upload(dataURI);
-      return res.url;
-    });
-
-    const imageUrls = await Promise.all(uploadPromises); // As all images will be uoloaded all at a time we want to wait for all of them to be uploaded so we use Promise.all
+    const imageUrls = await uploadImages(imageFiles); // As all images will be uoloaded all at a time we want to wait for all of them to be uploaded so we use Promise.all
 
      //2 If upload was successful, create a new hotel
     newHotel.imageUrls = imageUrls;
@@ -87,5 +80,43 @@ router.get("/:id", verifyToken, async(req: Request, res: Response) => {
     res.status(500).json({message: "Error fetching hotel"});
   }
 })
+
+router.put("/:hotelId", verifyToken, upload.array("imageFiles"), async(req:Request, res: Response) => {
+  try{
+    const updatedHotel : HotelType = req.body;
+    updatedHotel.lastUpdated = new Date();
+    const hotel = await Hotel.findOneAndUpdate({
+      _id: req.params.hotelId,
+      userId: req.userId,
+    }, updatedHotel, {new: true})
+
+    if(!hotel){
+      return res.status(404).json({message: "Hotel not found"});
+    }
+
+    const files = req.files as Express.Multer.File[];
+    const updatedImageUrls = await uploadImages(files);
+
+    hotel.imageUrls= [...updatedImageUrls, ...(updatedHotel.imageUrls || [])];
+    await hotel.save();
+  }
+  catch(error){
+    res.status(500).json({message: "Error updating hotel"});
+  }
+
+})
+
+async function uploadImages(imageFiles: Express.Multer.File[]) {
+  const uploadPromises = imageFiles.map(async (image) => {
+    const b64 = Buffer.from(image.buffer).toString("base64"); // convert image to base64
+    let dataURI = "data:" + image.mimetype + ";base64," + b64;
+    const res = await cloudinary.v2.uploader.upload(dataURI);
+    return res.url;
+  });
+
+  const imageUrls = await Promise.all(uploadPromises); // As all images will be uoloaded all at a time we want to wait for all of them to be uploaded so we use Promise.all
+  return imageUrls;
+}
+
 
 export default router;
