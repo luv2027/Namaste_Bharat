@@ -12,7 +12,20 @@ const EditHotel = () => {
   } 
   );
 
-  return <ManageHotelForm hotel={hotel} />
+  const {mutate} = useMutation(apiCLient.updateMyHotelById, {
+    onSuccess: () => {
+
+    },
+    onError: () => {
+
+    }
+  })
+
+  const handleSave = (hotelFormData: FormData) => {
+    mutate(hotelFormData);
+  };
+
+  return <ManageHotelForm hotel={hotel} onSave={handleSave}/>
 }
 
 export default EditHotel;
