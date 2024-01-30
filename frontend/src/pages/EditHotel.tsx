@@ -2,7 +2,8 @@ import {useParams}  from 'react-router-dom';
 import {useQuery} from 'react-query';
 import * as apiClient from '../api-client';
 import ManageHotelForm from '../forms/ManageHotelForm/ManageHotelForm';
-
+import {useMutation} from 'react-query';
+import { useAppContext } from "../contexts/AppContext";
 
 const EditHotel = () => {
   const {hotelId} = useParams();
@@ -12,12 +13,14 @@ const EditHotel = () => {
   } 
   );
 
-  const {mutate} = useMutation(apiCLient.updateMyHotelById, {
-    onSuccess: () => {
+  const {showToast} = useAppContext();
 
+  const {mutate, isLoading} = useMutation(apiClient.updateMyHotelId, {
+    onSuccess: () => {
+      showToast({message: "Hotel Saved!", type: "SUCCESS"});
     },
     onError: () => {
-
+      showToast({message: "Error in saving hotel", type: "ERROR"})
     }
   })
 
@@ -25,7 +28,7 @@ const EditHotel = () => {
     mutate(hotelFormData);
   };
 
-  return <ManageHotelForm hotel={hotel} onSave={handleSave}/>
+  return <ManageHotelForm hotel={hotel} onSave={handleSave} isLoading={isLoading}/>
 }
 
 export default EditHotel;
