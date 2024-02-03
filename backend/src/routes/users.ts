@@ -44,7 +44,7 @@ router.post("/register", [
 
       return res.status(200).send({message: "User registered OK"});
   }
-  catch(error){
+  catch(error){ 
     console.log(error);
     res.status(400).send({message: "Something went wrong"});
   }
