@@ -17,7 +17,7 @@ const MyBookings = () => {
       {hotels.map((hotel) => (
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_3fr] border border-slate-300 rounded-lg p-8 gap-5">
           <div className="lg:w-full lg:h-[250px]">
-            <img
+            <img alt="hotel image"
               src={hotel.imageUrls[0]}
               className="w-full h-full object-cover object-center"
             />

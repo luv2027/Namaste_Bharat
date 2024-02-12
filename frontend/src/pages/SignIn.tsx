@@ -4,7 +4,7 @@ import * as apiClient from '../api-client';
 import { useAppContext } from '../contexts/AppContext';
 import { useNavigate } from 'react-router-dom';
 import { useQueryClient } from 'react-query';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 
 export type SignInFormData = {
   email: string;
@@ -16,7 +16,9 @@ const SignIn = () => {
   const queryClient = useQueryClient();
 
   const {showToast} = useAppContext();
-  const navigate = useNavigate()
+  const navigate = useNavigate();
+
+  const location = useLocation();
 
   const {register, formState: {errors}, 
   handleSubmit
@@ -26,7 +28,7 @@ const SignIn = () => {
     onSuccess: async () => {
       showToast({message: "Sign in Success!", type: "SUCCESS"})
       await queryClient.invalidateQueries("validateToken"); //comes from appcontext.tsx
-      navigate("/"); //navigate to home page
+      navigate(location.state?.from?.pathname || "/"); //navigate to home page
     }, 
     onError :  (error: Error) => {
       showToast({message: error.message, type: "ERROR"});
@@ -64,7 +66,7 @@ const SignIn = () => {
 
       <span className = "flex items-center justify-between">
         <span className= "test-sm">
-          Not Registered ? <Link className = "underline" to = "/register">
+          Not Registered ?{" "} <Link className = "underline" to = "/register">
             Create an account here
           </Link>
         </span>

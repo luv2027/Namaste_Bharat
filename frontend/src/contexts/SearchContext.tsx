@@ -1,7 +1,7 @@
-import React from "react";
+
 import { useContext, useState } from "react";
 //will take all the search values and save it in the context. Will use this context in the search page to display the search results
-
+import * as React from 'react';
 type SearchContext = {
   destination: string;
   checkIn: Date;
